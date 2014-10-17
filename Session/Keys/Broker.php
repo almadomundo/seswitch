@@ -51,6 +51,7 @@ class Broker extends Storage\Broker
         $config = $config->getConfig();
         $keys   = array();
         $result = null;
+        $time   = time();
         foreach($config[Config\Broker::SESSION_CONFIG_ROUTE_OPTIONS] as $option){
             $keys[] = array(
                 self::SESSION_KEYS_ROUTE_POINT  => $option,
@@ -58,7 +59,7 @@ class Broker extends Storage\Broker
                                                     ?($result = $this->logicHelper->generateId())
                                                     :$this->logicHelper->generateId(),
                 self::SESSION_KEYS_PRIMARY_ID   => $id,
-                self::SESSION_KEYS_CREATED_AT   => time()
+                self::SESSION_KEYS_CREATED_AT   => $time
             );
         }
         $this->appendKeysToStorage($keys);
@@ -94,6 +95,17 @@ class Broker extends Storage\Broker
                 return $entry;
             }
         }
+    }
+
+    private function removeExpiredEntries($lifetime)
+    {
+        $createdAt = self::SESSION_KEYS_CREATED_AT; //as of 5.3
+        $this->writeStorageData(
+            array_filter($this->readStorageData(),
+            function($entry) use ($lifetime, $createdAt) {
+                return time() - $entry[$createdAt] <= $lifetime;
+            })
+        );
     }
 
 }
