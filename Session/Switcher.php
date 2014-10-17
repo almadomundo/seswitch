@@ -18,7 +18,7 @@ class Switcher
         $this->keysStorageBroker    = $keysStorageBroker;
     }
 
-    public function getPrimarySessionId($currentSessionId)
+    public function getSessionIdPair($currentSessionId)
     {
         if(isset($currentSessionId) && $primaryId = $this->keysStorageBroker->getPrimaryId($currentSessionId)){
             return array(
@@ -26,10 +26,10 @@ class Switcher
                 self::SESSION_SWITCH_CURRENT_ID => $this->keysStorageBroker->getCurrentId($this->configStorageBroker, $currentSessionId, $primaryId)
             );
         }
-        return $this->initPrimarySessionId();
+        return $this->initSessionIdPair();
     }
 
-    public function initPrimarySessionId()
+    public function initSessionIdPair()
     {
         $primaryId  = $this->logicHelper->generateId();
         return array(

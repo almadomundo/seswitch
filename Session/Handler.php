@@ -11,6 +11,8 @@ use Storage;
 
 class Handler
 {
+    const SESSION_DEFAULT_NAME  = 'PHPSESSID';
+
     private $sessionStorage;
     private $logicHelper;
 

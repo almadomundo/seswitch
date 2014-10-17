@@ -31,8 +31,8 @@ $sessionConfig      = new Session\Config\Broker($sessionHelper, new \Storage\Arr
 $sessionKeys        = new Session\Keys\Broker($sessionHelper, new \Storage\FileStorage(__DIR__.'/.session/session.keys'));
 $sessionSwitcher    = new Session\Switcher($sessionHelper, $sessionConfig, $sessionKeys);
 
-$id     = isset($_COOKIE['PHPSESSID'])?$_COOKIE['PHPSESSID']:null;
-$idData = $sessionSwitcher->getPrimarySessionId($id);
+$id     = isset($_COOKIE[Session\Handler::SESSION_DEFAULT_NAME])?$_COOKIE[Session\Handler::SESSION_DEFAULT_NAME]:null;
+$idData = $sessionSwitcher->getSessionIdPair($id);
 
 $sessionStorage     = new Storage\Broker(new Storage\FileStorage(__DIR__.'/.session/session.'.$idData[Session\Switcher::SESSION_SWITCH_PRIMARY_ID]));
 $sessionHandler     = new Session\Handler($sessionHelper, $sessionStorage);
